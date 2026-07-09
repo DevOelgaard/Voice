@@ -46,6 +46,9 @@ import voice.core.ui.icons.VoiceIcons
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
+import voice.features.bookOverview.views.dragdrop.DropTargetInfo
+import voice.features.bookOverview.views.dragdrop.dragDropTarget
+import voice.features.bookOverview.views.dragdrop.dragDropSource
 
 @Composable
 internal fun GridBooks(
@@ -208,6 +211,9 @@ internal fun GridBook(
       bookId = book.id,
       onBookClick = onBookClick,
       onBookLongClick = onBookLongClick,
+      modifier = Modifier.dragDropTarget(
+        DropTargetInfo.Book(book.id, book.series, book.seriesPart)
+      )
     ) {
       Column(
         modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp),
@@ -276,6 +282,24 @@ internal fun GridBook(
         )
       }
     }
+    
+    val dragDropState = voice.features.bookOverview.views.dragdrop.LocalDragDropState.current
+    if (dragDropState != null) {
+      Box(
+        modifier = Modifier
+          .align(Alignment.TopEnd)
+          .offset(x = (-8).dp, y = 8.dp)
+          .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.8f), MaterialTheme.shapes.small)
+          .padding(2.dp)
+      ) {
+        Icon(
+          imageVector = VoiceIcons.DragHandle,
+          contentDescription = "Drag to reorder",
+          modifier = Modifier.dragDropSource(book, dragDropState),
+          tint = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+      }
+    }
   }
 }
 
@@ -308,7 +332,11 @@ internal fun SeriesGridHeader(seriesName: String) {
     text = seriesName,
     style = MaterialTheme.typography.titleSmall,
     color = MaterialTheme.colorScheme.primary,
-    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 4.dp),
+    modifier = Modifier
+      .padding(start = 16.dp, top = 8.dp, bottom = 4.dp)
+      .dragDropTarget(
+        DropTargetInfo.SeriesHeader(seriesName)
+      ),
   )
 }
 

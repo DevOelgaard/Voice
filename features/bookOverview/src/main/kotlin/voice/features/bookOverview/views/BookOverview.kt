@@ -105,23 +105,28 @@ fun BookOverviewScreen(modifier: Modifier = Modifier) {
   )
 
   var showBottomSheet by remember { mutableStateOf(false) }
-  BookOverview(
-    viewState = viewState,
-    onSettingsClick = bookOverviewViewModel::onSettingsClick,
-    onBookClick = bookOverviewViewModel::onBookClick,
-    onBookLongClick = { bookId ->
-      bottomSheetViewModel.bookSelected(bookId)
-      showBottomSheet = true
-    },
-    onBookFolderClick = bookOverviewViewModel::onBookFolderClick,
-    onFolderPickerMovedDialogDismiss = bookOverviewViewModel::onFolderPickerMovedDialogDismiss,
-    onPlayButtonClick = bookOverviewViewModel::playPause,
-    onSearchActiveChange = bookOverviewViewModel::onSearchActiveChange,
-    onSearchQueryChange = bookOverviewViewModel::onSearchQueryChange,
-    onSearchBookClick = bookOverviewViewModel::onSearchBookClick,
-    onPermissionBugCardClick = bookOverviewViewModel::onPermissionBugCardClick,
-    onToggleAuthorExpanded = bookOverviewViewModel::toggleAuthorExpanded,
-  )
+  voice.features.bookOverview.views.dragdrop.ProvideDragDropState(
+    onDropAction = bookOverviewViewModel::onDropBookIntoSeries
+  ) {
+    BookOverview(
+      viewState = viewState,
+      onSettingsClick = bookOverviewViewModel::onSettingsClick,
+      onBookClick = bookOverviewViewModel::onBookClick,
+      onBookLongClick = { bookId ->
+        bottomSheetViewModel.bookSelected(bookId)
+        showBottomSheet = true
+      },
+      onBookFolderClick = bookOverviewViewModel::onBookFolderClick,
+      onFolderPickerMovedDialogDismiss = bookOverviewViewModel::onFolderPickerMovedDialogDismiss,
+      onPlayButtonClick = bookOverviewViewModel::playPause,
+      onSearchActiveChange = bookOverviewViewModel::onSearchActiveChange,
+      onSearchQueryChange = bookOverviewViewModel::onSearchQueryChange,
+      onSearchBookClick = bookOverviewViewModel::onSearchBookClick,
+      onPermissionBugCardClick = bookOverviewViewModel::onPermissionBugCardClick,
+      onToggleAuthorExpanded = bookOverviewViewModel::toggleAuthorExpanded,
+    )
+    voice.features.bookOverview.views.dragdrop.DragDropOverlay()
+  }
   val deleteBookViewState = deleteBookViewModel.state.value
   if (deleteBookViewState != null) {
     DeleteBookDialog(

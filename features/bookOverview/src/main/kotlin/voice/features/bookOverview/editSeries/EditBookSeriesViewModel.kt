@@ -53,6 +53,28 @@ class EditBookSeriesViewModel(private val repo: BookRepository) : BottomSheetIte
     )
   }
 
+  internal suspend fun openWithPrefill(bookId: BookId, series: String, part: String) {
+    val book = repo.get(bookId) ?: return
+    val author = book.content.author
+    val suggestedSeries = if (author != null) {
+        repo.all()
+            .filter { it.content.author == author && !it.content.series.isNullOrBlank() }
+            .mapNotNull { it.content.series }
+            .distinct()
+            .sorted()
+    } else {
+        emptyList()
+    }
+
+    _state.value = EditBookSeriesState(
+      bookId = bookId,
+      author = author,
+      currentSeries = series,
+      currentPart = part,
+      suggestedSeries = suggestedSeries,
+    )
+  }
+
   internal fun onDismiss() {
     _state.value = null
   }

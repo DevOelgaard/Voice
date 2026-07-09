@@ -44,6 +44,43 @@ object VoiceIcons {
         }
       }
       .build()
+
+  val DragHandle: ImageVector =
+    ImageVector.Builder(
+      name = "DragHandle",
+      defaultWidth = 24.dp,
+      defaultHeight = 24.dp,
+      viewportWidth = 24f,
+      viewportHeight = 24f,
+    )
+      .apply {
+        path(
+          fill = SolidColor(Color.Black),
+          fillAlpha = 1f,
+          stroke = null,
+          strokeAlpha = 1f,
+          strokeLineWidth = 1f,
+          strokeLineCap = StrokeCap.Butt,
+          strokeLineJoin = StrokeJoin.Bevel,
+          strokeLineMiter = 1f,
+          pathFillType = PathFillType.NonZero,
+        ) {
+          moveTo(4f, 15f)
+          horizontalLineToRelative(16f)
+          verticalLineToRelative(-2f)
+          lineTo(4f, 13f)
+          verticalLineToRelative(2f)
+          close()
+          moveTo(4f, 9f)
+          verticalLineToRelative(2f)
+          horizontalLineToRelative(16f)
+          lineTo(20f, 9f)
+          lineTo(4f, 9f)
+          close()
+        }
+      }
+      .build()
+
   /*
    * Source: https://fonts.gstatic.com/render/v1/Material+Symbols+Outlined/24dp/add.kt?var=opsz,wght,FILL,GRAD,ROND@24,400,0,0,50
    * Generated: 2026-06-20T11:13:08Z

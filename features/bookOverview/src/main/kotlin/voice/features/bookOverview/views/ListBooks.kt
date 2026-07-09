@@ -43,6 +43,9 @@ import voice.features.bookOverview.overview.BookOverviewItem
 import voice.core.ui.icons.VoiceIcons
 import androidx.compose.material3.Icon
 import androidx.compose.foundation.clickable
+import voice.features.bookOverview.views.dragdrop.DropTargetInfo
+import voice.features.bookOverview.views.dragdrop.dragDropTarget
+import voice.features.bookOverview.views.dragdrop.dragDropSource
 
 @Composable
 internal fun ListBooks(
@@ -199,6 +202,9 @@ internal fun ListBookRow(
       bookId = book.id,
       onBookClick = onBookClick,
       onBookLongClick = onBookLongClick,
+      modifier = Modifier.dragDropTarget(
+        DropTargetInfo.Book(book.id, book.series, book.seriesPart)
+      )
     ) {
       Column(Modifier.padding()) {
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -242,6 +248,18 @@ internal fun ListBookRow(
               progress = book.progress,
               remainingTimeMaxLines = 1,
               progressMaxLines = 1,
+            )
+          }
+
+          val dragDropState = voice.features.bookOverview.views.dragdrop.LocalDragDropState.current
+          if (dragDropState != null) {
+            Icon(
+              imageVector = VoiceIcons.DragHandle,
+              contentDescription = "Drag to reorder",
+              modifier = Modifier
+                .padding(16.dp)
+                .dragDropSource(book, dragDropState),
+              tint = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f)
             )
           }
         }
@@ -322,7 +340,11 @@ internal fun SeriesListHeader(seriesName: String) {
     text = seriesName,
     style = MaterialTheme.typography.titleSmall,
     color = MaterialTheme.colorScheme.primary,
-    modifier = Modifier.padding(start = 32.dp, top = 8.dp, bottom = 4.dp),
+    modifier = Modifier
+      .padding(start = 32.dp, top = 8.dp, bottom = 4.dp)
+      .dragDropTarget(
+        DropTargetInfo.SeriesHeader(seriesName)
+      ),
   )
 }
 

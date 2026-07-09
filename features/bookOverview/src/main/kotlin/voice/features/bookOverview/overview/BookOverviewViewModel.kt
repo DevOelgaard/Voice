@@ -18,6 +18,7 @@ import androidx.core.net.toUri
 import androidx.datastore.core.DataStore
 import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import voice.core.common.AppInfoProvider
 import voice.core.common.DispatcherProvider
@@ -46,7 +47,9 @@ import voice.core.scanner.MediaScanTrigger
 import voice.core.search.BookSearch
 import voice.core.ui.GridCount
 import voice.features.bookOverview.di.BookOverviewScope
+import voice.features.bookOverview.editSeries.EditBookSeriesViewModel
 import voice.features.bookOverview.search.BookSearchViewState
+import voice.features.bookOverview.views.dragdrop.DropTargetInfo
 import voice.navigation.Destination
 import voice.navigation.Navigator
 import kotlin.time.Instant
@@ -81,6 +84,7 @@ class BookOverviewViewModel(
   private val groupByAuthorStore: DataStore<Boolean>,
   @voice.core.data.store.ExpandedAuthorsStore
   private val expandedAuthorsStore: DataStore<Set<String>>,
+  private val editBookSeriesViewModel: EditBookSeriesViewModel,
   dispatcherProvider: DispatcherProvider,
 ) {
 
@@ -365,6 +369,70 @@ class BookOverviewViewModel(
             .setData("package:com.android.externalstorage".toUri()),
         ),
       )
+    }
+  }
+
+  fun onDropBookIntoSeries(draggedBookId: BookId, target: DropTargetInfo, isBeforeTarget: Boolean) {
+    scope.launch {
+      val allBooks = repo.flow().first()
+      val draggedBook = allBooks.find { it.id == draggedBookId } ?: return@launch
+
+      var newSeriesName: String? = null
+      var newPart: String? = null
+      var promptUser = false
+
+      when (target) {
+        is DropTargetInfo.SeriesHeader -> {
+          newSeriesName = target.seriesName
+          val seriesBooks = allBooks.filter { it.content.series == target.seriesName }
+          val maxPart = seriesBooks.mapNotNull { it.content.part?.toIntOrNull() }.maxOrNull() ?: 0
+          newPart = (maxPart + 1).toString()
+        }
+        is DropTargetInfo.Book -> {
+          val targetSeries = target.seriesName ?: return@launch
+          newSeriesName = targetSeries
+
+          val seriesBooks = allBooks.filter { it.content.series == targetSeries }
+            .sortedBy { it.content.part?.toIntOrNull() ?: 0 }
+
+          val targetIndex = seriesBooks.indexOfFirst { it.id == target.bookId }
+          if (targetIndex != -1) {
+            val targetBook = seriesBooks[targetIndex]
+            val targetPartNum = targetBook.content.part?.toIntOrNull() ?: 0
+
+            if (isBeforeTarget) {
+              val prevBook = seriesBooks.getOrNull(targetIndex - 1)
+              val prevPartNum = prevBook?.content?.part?.toIntOrNull() ?: 0
+
+              if (targetPartNum - prevPartNum > 1 && targetPartNum > 1) {
+                newPart = (targetPartNum - 1).toString()
+              } else {
+                promptUser = true
+              }
+            } else {
+              val nextBook = seriesBooks.getOrNull(targetIndex + 1)
+              val nextPartNum = nextBook?.content?.part?.toIntOrNull()
+
+              if (nextPartNum == null || nextPartNum - targetPartNum > 1) {
+                newPart = (targetPartNum + 1).toString()
+              } else {
+                promptUser = true
+              }
+            }
+          } else {
+             // Target book not in series list? Fallback
+             promptUser = true
+          }
+        }
+      }
+
+      if (promptUser) {
+        editBookSeriesViewModel.openWithPrefill(draggedBookId, newSeriesName.orEmpty(), "")
+      } else {
+        repo.updateBook(draggedBookId) { book ->
+          book.copy(series = newSeriesName, part = newPart)
+        }
+      }
     }
   }
 }

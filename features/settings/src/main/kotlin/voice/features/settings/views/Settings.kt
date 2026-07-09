@@ -236,6 +236,13 @@ private fun Settings(
             Switch(
               checked = viewState.lockscreenSeekingEnabled,
               onCheckedChange = { listener.toggleLockscreenSeeking() },
+          modifier = Modifier.clickable { listener.toggleAdjustTimeForPlaybackSpeed() },
+          headlineContent = { Text(stringResource(StringsR.string.settings_playback_adjust_time_for_speed_title)) },
+          supportingContent = { Text(stringResource(StringsR.string.settings_playback_adjust_time_for_speed_summary)) },
+          trailingContent = {
+            Switch(
+              checked = viewState.adjustTimeForPlaybackSpeed,
+              onCheckedChange = { listener.toggleAdjustTimeForPlaybackSpeed() },
             )
           },
         )

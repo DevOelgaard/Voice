@@ -48,6 +48,7 @@ public annotation class DeveloperMenuUnlockedStore
 public annotation class FeatureFlagOverridesStore
 
 @Qualifier
+public annotation class AdjustTimeForPlaybackSpeedStore
 public annotation class GroupByAuthorStore
 
 @Qualifier

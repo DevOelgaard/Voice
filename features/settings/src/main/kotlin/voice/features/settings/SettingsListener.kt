@@ -30,6 +30,8 @@ interface SettingsListener {
   fun openFolderPicker()
   fun onAppVersionClick()
   fun toggleLockscreenSeeking()
+  fun toggleAdjustTimeForPlaybackSpeed()
+
   fun openDeveloperMenu()
   fun toggleGroupByAuthor()
   fun exportData(uri: Uri)
@@ -65,6 +67,7 @@ interface SettingsListener {
       override fun toggleGroupByAuthor() {}
       override fun exportData(uri: Uri) {}
       override fun importData(uri: Uri) {}
+      override fun toggleAdjustTimeForPlaybackSpeed() {}
     }
   }
 }

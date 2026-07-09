@@ -75,6 +75,7 @@ class SettingsViewModelTest {
     developerMenuUnlockedStore = developerMenuUnlockedStore,
     lockscreenSeekingEnabledStore = lockscreenSeekingEnabledStore,
     dynamicColorAvailability = dynamicColorAvailability,
+    adjustTimeForPlaybackSpeedStore = MemoryDataStore(false),
     groupByAuthorStore = groupByAuthorStore,
     dispatcherProvider = DispatcherProvider(scope.coroutineContext, scope.coroutineContext, scope.coroutineContext),
   )

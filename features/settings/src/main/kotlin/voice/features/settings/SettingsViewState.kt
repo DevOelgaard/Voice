@@ -19,6 +19,7 @@ data class SettingsViewState(
   val showDeveloperMenu: Boolean,
   val showSupportDevelopment: Boolean,
   val kioskMode: Boolean,
+  val adjustTimeForPlaybackSpeed: Boolean,
   val lockscreenSeekingEnabled: Boolean,
   val groupByAuthor: Boolean,
 ) {
@@ -47,6 +48,7 @@ data class SettingsViewState(
         showDeveloperMenu = true,
         showSupportDevelopment = true,
         kioskMode = false,
+        adjustTimeForPlaybackSpeed = false,
         lockscreenSeekingEnabled = false,
         groupByAuthor = false,
       )

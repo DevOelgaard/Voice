@@ -49,6 +49,7 @@ fun VoiceTheme(
       primary = VoiceBlue,
       secondary = Color(0xFF5E6F95),
       isDark = darkTheme,
+      isAmoled = true,
       style = PaletteStyle.Expressive,
       specVersion = ColorSpec.SpecVersion.SPEC_2025,
     ) {
@@ -60,9 +61,21 @@ fun VoiceTheme(
 @RequiresApi(31)
 @Composable
 private fun systemDynamicColorScheme(darkTheme: Boolean): ColorScheme {
-  return if (darkTheme) {
+  val scheme = if (darkTheme) {
     dynamicDarkColorScheme(LocalContext.current)
   } else {
     dynamicLightColorScheme(LocalContext.current)
+  }
+
+  return if (darkTheme) {
+    scheme.copy(
+      background = Color.Black,
+      surface = Color.Black,
+      surfaceContainerLowest = Color.Black,
+      surfaceContainerLow = Color.Black,
+      surfaceContainer = Color.Black,
+    )
+  } else {
+    scheme
   }
 }

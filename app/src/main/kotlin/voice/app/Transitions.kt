@@ -106,6 +106,9 @@ val SharedZAxisEnterTransition =
       animationSpec = tween(durationMillis = DurationLong2, easing = EmphasizedEasing),
     )
 
+val SharedElementEnterTransition =
+  fadeIn(animationSpec = tween(durationMillis = DurationLong1, easing = EmphasizedEasing))
+
 val SharedZAxisExitTransition =
   fadeOut(animationSpec = tween(durationMillis = DurationMedium1, easing = EmphasizedAccelerateEasing)) +
     scaleOut(

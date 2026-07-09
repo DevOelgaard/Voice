@@ -20,6 +20,7 @@ data class SettingsViewState(
   val showSupportDevelopment: Boolean,
   val kioskMode: Boolean,
   val lockscreenSeekingEnabled: Boolean,
+  val groupByAuthor: Boolean,
 ) {
 
   enum class Dialog {
@@ -47,6 +48,7 @@ data class SettingsViewState(
         showSupportDevelopment = true,
         kioskMode = false,
         lockscreenSeekingEnabled = false,
+        groupByAuthor = false,
       )
     }
   }

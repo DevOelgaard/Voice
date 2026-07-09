@@ -48,4 +48,8 @@ public annotation class DeveloperMenuUnlockedStore
 public annotation class FeatureFlagOverridesStore
 
 @Qualifier
+public annotation class GroupByAuthorStore
+
+@Qualifier
+public annotation class ExpandedAuthorsStore
 public annotation class LockscreenSeekingEnabledStore

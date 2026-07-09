@@ -58,6 +58,7 @@ class SettingsViewModelTest {
   private val dynamicColorAvailability = mockk<DynamicColorAvailability> {
     every { isSupported() } returns true
   }
+  private val groupByAuthorStore = MemoryDataStore(false)
 
   private val viewModel = SettingsViewModel(
     themeModeStore = themeModeStore,
@@ -74,6 +75,7 @@ class SettingsViewModelTest {
     developerMenuUnlockedStore = developerMenuUnlockedStore,
     lockscreenSeekingEnabledStore = lockscreenSeekingEnabledStore,
     dynamicColorAvailability = dynamicColorAvailability,
+    groupByAuthorStore = groupByAuthorStore,
     dispatcherProvider = DispatcherProvider(scope.coroutineContext, scope.coroutineContext, scope.coroutineContext),
   )
 

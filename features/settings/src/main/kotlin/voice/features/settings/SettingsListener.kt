@@ -30,6 +30,7 @@ interface SettingsListener {
   fun onAppVersionClick()
   fun toggleLockscreenSeeking()
   fun openDeveloperMenu()
+  fun toggleGroupByAuthor()
 
   companion object {
     fun noop() = object : SettingsListener {
@@ -58,6 +59,7 @@ interface SettingsListener {
       override fun onAppVersionClick() {}
       override fun toggleLockscreenSeeking() {}
       override fun openDeveloperMenu() {}
+      override fun toggleGroupByAuthor() {}
     }
   }
 }

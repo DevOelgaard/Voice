@@ -2,8 +2,11 @@ package voice.features.settings.views.sleeptimer
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,8 +22,14 @@ internal fun AutoSleepTimerCard(
   viewState: SettingsViewState.AutoSleepTimerViewState,
   listener: SettingsListener,
 ) {
-  OutlinedCard(modifier = Modifier.padding(horizontal = 8.dp, vertical = 16.dp)) {
-    Column(modifier = Modifier.padding(horizontal = 8.dp, vertical = 8.dp)) {
+  OutlinedCard(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
+    Column(modifier = Modifier.padding(vertical = 8.dp)) {
+      Text(
+        text = stringResource(StringsR.string.settings_category_sleep_timer),
+        style = MaterialTheme.typography.titleSmall,
+        color = MaterialTheme.colorScheme.primary,
+        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+      )
       AutoSleepTimerRow(
         autoSleepTimer = viewState.enabled,
         start = viewState.startTime,

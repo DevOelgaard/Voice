@@ -280,4 +280,12 @@
     <string name="sleep_timer.dialog.title">Sweet dreams! 🌙</string>
     <!-- Sleep timer option and playback status for stopping at the end of a chapter. -->
     <string name="sleep_timer.end_of_chapter">End of Chapter</string>
+    <string name="settings.category.developer">Developer Options</string>
+    <string name="settings.category.library">Library</string>
+    <string name="settings.category.appearance">Appearance</string>
+    <string name="settings.category.privacy">Privacy</string>
+    <string name="settings.category.playback">Playback</string>
+    <string name="settings.category.sleep_timer">Sleep Timer</string>
+    <string name="settings.category.support">Support</string>
+    <string name="settings.category.about">About</string>
 </resources>

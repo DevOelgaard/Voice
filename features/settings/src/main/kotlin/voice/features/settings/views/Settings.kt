@@ -22,6 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.SwitchDefaults
+import androidx.compose.ui.unit.dp
 import androidx.navigation3.runtime.NavEntry
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
@@ -86,76 +94,93 @@ private fun Settings(
     LazyColumn(contentPadding = contentPadding) {
       if (viewState.showDeveloperMenu && !viewState.kioskMode) {
         item {
-          DeveloperMenuItem(
-            onClick = listener::openDeveloperMenu,
+          SettingsCard(title = stringResource(StringsR.string.settings_category_developer)) {
+            DeveloperMenuItem(
+              onClick = listener::openDeveloperMenu,
+            )
+          }
+        }
+      }
+      item {
+        SettingsCard(title = stringResource(StringsR.string.settings_category_library)) {
+          ListItem(
+            modifier = Modifier.clickable { listener.openFolderPicker() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Book,
+                contentDescription = stringResource(StringsR.string.library_folders_title),
+              )
+            },
+            headlineContent = {
+              Text(stringResource(StringsR.string.library_folders_title))
+            },
+            supportingContent = {
+              Text(stringResource(StringsR.string.settings_library_folders_summary))
+            },
+          )
+          ListItem(
+            modifier = Modifier.clickable { listener.toggleGrid() },
+            leadingContent = {
+              val icon = if (viewState.useGrid) {
+                VoiceIcons.GridView
+              } else {
+                VoiceIcons.ViewList
+              }
+              Icon(
+                imageVector = icon,
+                contentDescription = stringResource(StringsR.string.settings_library_use_grid_title),
+              )
+            },
+            headlineContent = { Text(stringResource(StringsR.string.settings_library_use_grid_title)) },
+            trailingContent = {
+              val switchIcon: @Composable (() -> Unit)? = if (viewState.useGrid) {
+                {
+                  Icon(
+                    imageVector = VoiceIcons.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                  )
+                }
+              } else {
+                null
+              }
+              Switch(
+                checked = viewState.useGrid,
+                onCheckedChange = {
+                  listener.toggleGrid()
+                },
+                thumbContent = switchIcon,
+              )
+            },
           )
         }
       }
+
       item {
-        ListItem(
-          modifier = Modifier.clickable { listener.openFolderPicker() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Book,
-              contentDescription = stringResource(StringsR.string.library_folders_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.library_folders_title))
-          },
-          supportingContent = {
-            Text(stringResource(StringsR.string.settings_library_folders_summary))
-          },
-        )
-      }
-      item {
-        ThemeModeRow(viewState.themeMode, listener::onThemeModeRowClick)
-      }
-      if (viewState.showThemeColorSchemePref) {
-        item {
-          ThemeColorSchemeRow(viewState.themeColorScheme, listener::onThemeColorSchemeRowClick)
+        SettingsCard(title = stringResource(StringsR.string.settings_category_appearance)) {
+          ThemeModeRow(viewState.themeMode, listener::onThemeModeRowClick)
+          if (viewState.showThemeColorSchemePref) {
+            ThemeColorSchemeRow(viewState.themeColorScheme, listener::onThemeColorSchemeRowClick)
+          }
         }
       }
+
       if (viewState.showAnalyticSetting && !viewState.kioskMode) {
         item {
-          AnalyticsRow(analyticsEnabled = viewState.analyticsEnabled, toggle = listener::toggleAnalytics)
-        }
-      }
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.toggleGrid() },
-          leadingContent = {
-            val icon = if (viewState.useGrid) {
-              VoiceIcons.GridView
-            } else {
-              VoiceIcons.ViewList
-            }
-            Icon(
-              imageVector = icon,
-              contentDescription = stringResource(StringsR.string.settings_library_use_grid_title),
-            )
-          },
-          headlineContent = { Text(stringResource(StringsR.string.settings_library_use_grid_title)) },
-          trailingContent = {
-            Switch(
-              checked = viewState.useGrid,
-              onCheckedChange = {
-                listener.toggleGrid()
-              },
-            )
-          },
-        )
-      }
-
-      item {
-        SeekTimeRow(viewState.seekTimeInSeconds) {
-          listener.onSeekAmountRowClick()
+          SettingsCard(title = stringResource(StringsR.string.settings_category_privacy)) {
+            AnalyticsRow(analyticsEnabled = viewState.analyticsEnabled, toggle = listener::toggleAnalytics)
+          }
         }
       }
 
       item {
-        AutoRewindRow(viewState.autoRewindInSeconds) {
-          listener.onAutoRewindRowClick()
+        SettingsCard(title = stringResource(StringsR.string.settings_category_playback)) {
+          SeekTimeRow(viewState.seekTimeInSeconds) {
+            listener.onSeekAmountRowClick()
+          }
+          AutoRewindRow(viewState.autoRewindInSeconds) {
+            listener.onAutoRewindRowClick()
+          }
         }
       }
 
@@ -163,121 +188,150 @@ private fun Settings(
         AutoSleepTimerCard(viewState.autoSleepTimer, listener)
       }
 
-      if (viewState.showSupportDevelopment) {
-        item {
+      item {
+        SettingsCard(title = stringResource(StringsR.string.settings_category_support)) {
+          if (viewState.showSupportDevelopment) {
+            ListItem(
+              modifier = Modifier.clickable { listener.openSupportVoice() },
+              leadingContent = {
+                Icon(
+                  imageVector = VoiceIcons.Favorite,
+                  contentDescription = stringResource(StringsR.string.settings_support_support_voice_title),
+                  tint = MaterialTheme.colorScheme.primary,
+                )
+              },
+              headlineContent = {
+                Text(stringResource(StringsR.string.settings_support_support_voice_title))
+              },
+              supportingContent = {
+                Text(stringResource(StringsR.string.settings_support_support_voice_summary))
+              },
+            )
+          }
+
           ListItem(
-            modifier = Modifier.clickable { listener.openSupportVoice() },
+            modifier = Modifier.clickable { listener.suggestIdea() },
             leadingContent = {
               Icon(
-                imageVector = VoiceIcons.Favorite,
-                contentDescription = stringResource(StringsR.string.settings_support_support_voice_title),
-                tint = MaterialTheme.colorScheme.primary,
+                imageVector = VoiceIcons.Lightbulb,
+                contentDescription = stringResource(StringsR.string.settings_support_suggest_idea_title),
               )
             },
             headlineContent = {
-              Text(stringResource(StringsR.string.settings_support_support_voice_title))
+              Text(stringResource(StringsR.string.settings_support_suggest_idea_title))
             },
-            supportingContent = {
-              Text(stringResource(StringsR.string.settings_support_support_voice_summary))
+          )
+
+          ListItem(
+            modifier = Modifier.clickable { listener.getSupport() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Help,
+                contentDescription = stringResource(StringsR.string.settings_support_get_support_title),
+              )
+            },
+            headlineContent = {
+              Text(stringResource(StringsR.string.settings_support_get_support_title))
+            },
+          )
+
+          ListItem(
+            modifier = Modifier.clickable { listener.openBugReport() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.BugReport,
+                contentDescription = stringResource(StringsR.string.settings_support_report_issue_title),
+              )
+            },
+            headlineContent = {
+              Text(stringResource(StringsR.string.settings_support_report_issue_title))
+            },
+          )
+
+          ListItem(
+            modifier = Modifier.clickable { listener.openTranslations() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Language,
+                contentDescription = stringResource(StringsR.string.settings_support_help_translating_title),
+              )
+            },
+            headlineContent = {
+              Text(stringResource(StringsR.string.settings_support_help_translating_title))
+            },
+          )
+
+          ListItem(
+            modifier = Modifier.clickable { listener.openFaq() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Help,
+                contentDescription = stringResource(StringsR.string.settings_support_faq_title),
+              )
+            },
+            headlineContent = {
+              Text(stringResource(StringsR.string.settings_support_faq_title))
             },
           )
         }
       }
 
       item {
-        ListItem(
-          modifier = Modifier.clickable { listener.suggestIdea() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Lightbulb,
-              contentDescription = stringResource(StringsR.string.settings_support_suggest_idea_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_suggest_idea_title))
-          },
-        )
+        SettingsCard(title = stringResource(StringsR.string.settings_category_about)) {
+          AppVersion(
+            appVersion = viewState.appVersion,
+            onClick = listener::onAppVersionClick,
+          )
+        }
       }
 
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.getSupport() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Help,
-              contentDescription = stringResource(StringsR.string.settings_support_get_support_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_get_support_title))
-          },
-        )
-      }
-
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.openBugReport() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.BugReport,
-              contentDescription = stringResource(StringsR.string.settings_support_report_issue_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_report_issue_title))
-          },
-        )
-      }
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.openTranslations() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Language,
-              contentDescription = stringResource(StringsR.string.settings_support_help_translating_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_help_translating_title))
-          },
-        )
-      }
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.openFaq() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Help,
-              contentDescription = stringResource(StringsR.string.settings_support_faq_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_faq_title))
-          },
-        )
-      }
-      item {
-        AppVersion(
-          appVersion = viewState.appVersion,
-          onClick = listener::onAppVersionClick,
-        )
-      }
       if (viewState.kioskMode) {
         if (viewState.showAnalyticSetting) {
           item {
-            AnalyticsRow(analyticsEnabled = viewState.analyticsEnabled, toggle = listener::toggleAnalytics)
+            SettingsCard(title = stringResource(StringsR.string.settings_category_privacy)) {
+              AnalyticsRow(analyticsEnabled = viewState.analyticsEnabled, toggle = listener::toggleAnalytics)
+            }
           }
         }
         if (viewState.showDeveloperMenu) {
           item {
-            DeveloperMenuItem(
-              onClick = listener::openDeveloperMenu,
-            )
+            SettingsCard(title = stringResource(StringsR.string.settings_category_developer)) {
+              DeveloperMenuItem(
+                onClick = listener::openDeveloperMenu,
+              )
+            }
           }
         }
       }
     }
     Dialog(viewState, listener)
+  }
+}
+
+@Composable
+private fun SettingsCard(
+  modifier: Modifier = Modifier,
+  title: String? = null,
+  content: @Composable ColumnScope.() -> Unit,
+) {
+  OutlinedCard(
+    modifier = modifier
+      .fillMaxWidth()
+      .padding(horizontal = 16.dp, vertical = 8.dp),
+  ) {
+    Column(
+      modifier = Modifier.padding(vertical = 8.dp),
+    ) {
+      if (title != null) {
+        Text(
+          text = title,
+          style = MaterialTheme.typography.titleSmall,
+          color = MaterialTheme.colorScheme.primary,
+          modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+        )
+      }
+      content()
+    }
   }
 }
 
@@ -301,9 +355,21 @@ private fun AnalyticsRow(
       Text(text = stringResource(StringsR.string.settings_analytics_consent_description))
     },
     trailingContent = {
+      val switchIcon: @Composable (() -> Unit)? = if (analyticsEnabled) {
+        {
+          Icon(
+            imageVector = VoiceIcons.Check,
+            contentDescription = null,
+            modifier = Modifier.size(SwitchDefaults.IconSize),
+          )
+        }
+      } else {
+        null
+      }
       Switch(
         checked = analyticsEnabled,
         onCheckedChange = { toggle() },
+        thumbContent = switchIcon,
       )
     },
   )

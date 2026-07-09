@@ -11,6 +11,39 @@ import androidx.compose.ui.unit.dp
 
 object VoiceIcons {
 
+  val FastForward: ImageVector =
+    ImageVector.Builder(
+      name = "FastForward",
+      defaultWidth = 24.dp,
+      defaultHeight = 24.dp,
+      viewportWidth = 24f,
+      viewportHeight = 24f,
+    )
+      .apply {
+        path(
+          fill = SolidColor(Color.Black),
+          fillAlpha = 1f,
+          stroke = null,
+          strokeAlpha = 1f,
+          strokeLineWidth = 1f,
+          strokeLineCap = StrokeCap.Butt,
+          strokeLineJoin = StrokeJoin.Bevel,
+          strokeLineMiter = 1f,
+          pathFillType = PathFillType.NonZero,
+        ) {
+          moveTo(4f, 18f)
+          lineToRelative(8.5f, -6f)
+          lineTo(4f, 6f)
+          verticalLineToRelative(12f)
+          close()
+          moveTo(13f, 6f)
+          verticalLineToRelative(12f)
+          lineToRelative(8.5f, -6f)
+          lineTo(13f, 6f)
+          close()
+        }
+      }
+      .build()
   /*
    * Source: https://fonts.gstatic.com/render/v1/Material+Symbols+Outlined/24dp/add.kt?var=opsz,wght,FILL,GRAD,ROND@24,400,0,0,50
    * Generated: 2026-06-20T11:13:08Z

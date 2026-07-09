@@ -65,6 +65,7 @@ internal fun BookPlayContent(
         )
         Spacer(modifier = Modifier.size(16.dp))
         SliderRow(
+          playing = viewState.playing,
           duration = viewState.duration,
           playedTime = viewState.playedTime,
           onSeek = onSeek,
@@ -108,6 +109,7 @@ internal fun BookPlayContent(
       )
       Spacer(modifier = Modifier.size(16.dp))
       SliderRow(
+        playing = viewState.playing,
         duration = viewState.duration,
         playedTime = viewState.playedTime,
         onSeek = onSeek,

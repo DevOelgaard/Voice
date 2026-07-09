@@ -2,8 +2,10 @@ package voice.features.bookOverview.views
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -24,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.intl.LocaleList
 import androidx.compose.ui.text.toUpperCase
@@ -108,6 +111,13 @@ internal fun ListBooks(
                   ) {
                     SeriesListHeader(seriesName = seriesGroup.seriesName)
                   }
+                } else if (item.seriesGroups.size > 1) {
+                  item(
+                    key = "${item.id}_standalone",
+                    contentType = "series_group",
+                  ) {
+                    SeriesListHeader(seriesName = "Standalone Books")
+                  }
                 }
                 items(
                   items = seriesGroup.books,
@@ -184,68 +194,84 @@ internal fun ListBookRow(
   onBookLongClick: (BookId) -> Unit,
   modifier: Modifier = Modifier,
 ) {
-  BookCard(
-    bookId = book.id,
-    onBookClick = onBookClick,
-    onBookLongClick = onBookLongClick,
-    modifier = modifier,
-  ) {
-    Column(Modifier.padding()) {
-      Row(verticalAlignment = Alignment.CenterVertically) {
-        CoverImage(book.id, book.cover)
+  Box(modifier = modifier) {
+    BookCard(
+      bookId = book.id,
+      onBookClick = onBookClick,
+      onBookLongClick = onBookLongClick,
+    ) {
+      Column(Modifier.padding()) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+          CoverImage(book.id, book.cover)
 
-        Column(
-          Modifier
-            .padding(start = 12.dp)
-            .weight(1f),
-        ) {
-          if (book.author != null) {
+          Column(
+            Modifier
+              .padding(start = 12.dp)
+              .weight(1f),
+          ) {
+            if (book.author != null) {
+              Text(
+                text = book.author.toUpperCase(LocaleList.current),
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+              )
+            }
+
             Text(
-              text = book.author.toUpperCase(LocaleList.current),
-              style = MaterialTheme.typography.labelSmall,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-              maxLines = 1,
+              text = book.name,
+              style = MaterialTheme.typography.titleSmall,
+              color = MaterialTheme.colorScheme.onSurface,
+              maxLines = 2,
+            )
+
+            if (book.series != null) {
+              val partString = if (!book.seriesPart.isNullOrBlank()) ", Part ${book.seriesPart}" else ""
+              Text(
+                text = "${book.series}$partString",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1,
+              )
+            }
+
+            BookRemainingProgressRow(
+              modifier = Modifier
+                .padding(end = 12.dp),
+              remainingTime = book.remainingTime,
+              progress = book.progress,
+              remainingTimeMaxLines = 1,
+              progressMaxLines = 1,
             )
           }
+        }
 
-          Text(
-            text = book.name,
-            style = MaterialTheme.typography.titleSmall,
-            color = MaterialTheme.colorScheme.onSurface,
-            maxLines = 2,
-          )
-
-          if (book.series != null) {
-            val partString = if (!book.seriesPart.isNullOrBlank()) ", Part ${book.seriesPart}" else ""
-            Text(
-              text = "${book.series}$partString",
-              style = MaterialTheme.typography.labelMedium,
-              color = MaterialTheme.colorScheme.onSurfaceVariant,
-              maxLines = 1,
-            )
-          }
-
-          BookRemainingProgressRow(
-            modifier = Modifier
-              .padding(end = 12.dp),
-            remainingTime = book.remainingTime,
+        if (book.progress > 0.05f) {
+          Spacer(Modifier.size(0.dp))
+          BookProgressIndicator(
             progress = book.progress,
-            remainingTimeMaxLines = 1,
-            progressMaxLines = 1,
+            modifier = Modifier
+              .fillMaxWidth()
+              .clip(MaterialTheme.shapes.small)
+              .height(4.dp),
+            color = MaterialTheme.colorScheme.primary,
+            trackColor = MaterialTheme.colorScheme.surfaceVariant,
           )
         }
       }
-
-      if (book.progress > 0.05f) {
-        Spacer(Modifier.size(0.dp))
-        BookProgressIndicator(
-          progress = book.progress,
-          modifier = Modifier
-            .fillMaxWidth()
-            .clip(MaterialTheme.shapes.small)
-            .height(4.dp),
-          color = MaterialTheme.colorScheme.primary,
-          trackColor = MaterialTheme.colorScheme.surfaceVariant,
+    }
+    if (book.series != null && !book.seriesPart.isNullOrBlank()) {
+      Box(
+        modifier = Modifier
+          .align(Alignment.TopStart)
+          .offset(x = 4.dp, y = 4.dp)
+          .background(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.shapes.small)
+          .padding(horizontal = 6.dp, vertical = 2.dp)
+      ) {
+        Text(
+          text = "#${book.seriesPart}",
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onPrimaryContainer
         )
       }
     }
@@ -259,18 +285,23 @@ private fun CoverImage(
 ) {
   val startPadding = 16.dp
   val endPadding = 16.dp
-  AsyncImage(
+  Box(
     modifier = Modifier
       .padding(top = 8.dp, start = 8.dp, bottom = 8.dp)
       .size(76.dp)
-      .sharedCoverElementModifier(bookId)
-      .clip(RoundedCornerShape(topStart = startPadding, bottomStart = startPadding, topEnd = endPadding, bottomEnd = endPadding)),
-    model = cover,
-    placeholder = painterResource(id = UiR.drawable.album_art),
-    error = painterResource(id = UiR.drawable.album_art),
-    contentScale = ContentScale.Crop,
-    contentDescription = null,
-  )
+  ) {
+    AsyncImage(
+      modifier = Modifier
+        .fillMaxSize()
+        .sharedCoverElementModifier(bookId)
+        .clip(RoundedCornerShape(topStart = startPadding, bottomStart = startPadding, topEnd = endPadding, bottomEnd = endPadding)),
+      model = cover,
+      placeholder = painterResource(id = UiR.drawable.album_art),
+      error = painterResource(id = UiR.drawable.album_art),
+      contentScale = ContentScale.Crop,
+      contentDescription = null,
+    )
+  }
 }
 
 @Composable

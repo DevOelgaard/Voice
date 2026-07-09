@@ -26,6 +26,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalResources
 import androidx.compose.ui.res.painterResource
@@ -118,6 +119,14 @@ internal fun GridBooks(
                   ) {
                     SeriesGridHeader(seriesName = seriesGroup.seriesName)
                   }
+                } else if (item.seriesGroups.size > 1) {
+                  item(
+                    span = { GridItemSpan(maxLineSpan) },
+                    key = "${item.id}_standalone",
+                    contentType = "series_group",
+                  ) {
+                    SeriesGridHeader(seriesName = "Standalone Books")
+                  }
                 }
                 items(
                   items = seriesGroup.books,
@@ -194,61 +203,78 @@ internal fun GridBook(
   onBookClick: (BookId) -> Unit,
   onBookLongClick: (BookId) -> Unit,
 ) {
-  BookCard(
-    bookId = book.id,
-    onBookClick = onBookClick,
-    onBookLongClick = onBookLongClick,
-  ) {
-    Column(
-      modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp),
+  Box {
+    BookCard(
+      bookId = book.id,
+      onBookClick = onBookClick,
+      onBookLongClick = onBookLongClick,
     ) {
-      Box(
-        modifier = Modifier
-          .fillMaxWidth()
-          .aspectRatio(4f / 3f)
-          .sharedCoverElementModifier(book.id)
-          .clip(MaterialTheme.shapes.large)
-          .background(MaterialTheme.colorScheme.surfaceVariant),
-        contentAlignment = Alignment.Center,
+      Column(
+        modifier = Modifier.padding(start = 12.dp, end = 12.dp, top = 12.dp),
       ) {
-        AsyncImage(
-          modifier = Modifier.fillMaxSize(),
-          contentScale = ContentScale.Crop,
-          model = book.cover,
-          placeholder = painterResource(id = UiR.drawable.album_art),
-          error = painterResource(id = UiR.drawable.album_art),
-          contentDescription = null,
-        )
-      }
+        Box(
+          modifier = Modifier
+            .fillMaxWidth()
+            .aspectRatio(4f / 3f)
+            .sharedCoverElementModifier(book.id)
+            .clip(MaterialTheme.shapes.large)
+            .background(MaterialTheme.colorScheme.surfaceVariant),
+          contentAlignment = Alignment.Center,
+        ) {
+          AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Crop,
+            model = book.cover,
+            placeholder = painterResource(id = UiR.drawable.album_art),
+            error = painterResource(id = UiR.drawable.album_art),
+            contentDescription = null,
+          )
+        }
 
-      Spacer(Modifier.height(4.dp))
+        Spacer(Modifier.height(4.dp))
 
-      Text(
-        text = book.name,
-        style = MaterialTheme.typography.titleMedium,
-        color = MaterialTheme.colorScheme.onSurface,
-        maxLines = 3,
-        overflow = TextOverflow.Ellipsis,
-      )
-
-      if (book.series != null) {
-        val partString = if (!book.seriesPart.isNullOrBlank()) ", Part ${book.seriesPart}" else ""
         Text(
-          text = "${book.series}$partString",
-          style = MaterialTheme.typography.labelMedium,
-          color = MaterialTheme.colorScheme.onSurfaceVariant,
-          maxLines = 1,
+          text = book.name,
+          style = MaterialTheme.typography.titleMedium,
+          color = MaterialTheme.colorScheme.onSurface,
+          maxLines = 3,
           overflow = TextOverflow.Ellipsis,
         )
+
+        if (book.series != null) {
+          val partString = if (!book.seriesPart.isNullOrBlank()) ", Part ${book.seriesPart}" else ""
+          Text(
+            text = "${book.series}$partString",
+            style = MaterialTheme.typography.labelMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+          )
+        }
+
+        BookRemainingProgressRow(
+          remainingTime = book.remainingTime,
+          progress = book.progress,
+        )
+
+        Spacer(Modifier.height(8.dp))
+        BookProgressIndicator(progress = book.progress)
       }
-
-      BookRemainingProgressRow(
-        remainingTime = book.remainingTime,
-        progress = book.progress,
-      )
-
-      Spacer(Modifier.height(8.dp))
-      BookProgressIndicator(progress = book.progress)
+    }
+    if (book.series != null && !book.seriesPart.isNullOrBlank()) {
+      Box(
+        modifier = Modifier
+          .align(Alignment.TopStart)
+          .offset(x = 8.dp, y = 8.dp)
+          .background(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.shapes.small)
+          .padding(horizontal = 6.dp, vertical = 2.dp)
+      ) {
+        Text(
+          text = "#${book.seriesPart}",
+          style = MaterialTheme.typography.labelSmall,
+          color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+      }
     }
   }
 }

@@ -21,6 +21,7 @@ import voice.core.data.ThemeColorScheme
 import voice.core.data.ThemeMode
 import voice.core.data.sleeptimer.SleepTimerPreference
 import voice.core.featureflag.MemoryFeatureFlag
+import voice.core.data.backup.BackupRepository
 import voice.core.ui.DynamicColorAvailability
 import voice.core.ui.GridCount
 import voice.navigation.Destination
@@ -59,6 +60,8 @@ class SettingsViewModelTest {
     every { isSupported() } returns true
   }
   private val groupByAuthorStore = MemoryDataStore(false)
+  private val backupRepository = mockk<BackupRepository>()
+  private val application = mockk<android.app.Application>()
 
   private val viewModel = SettingsViewModel(
     themeModeStore = themeModeStore,
@@ -78,6 +81,8 @@ class SettingsViewModelTest {
     adjustTimeForPlaybackSpeedStore = MemoryDataStore(false),
     groupByAuthorStore = groupByAuthorStore,
     dispatcherProvider = DispatcherProvider(scope.coroutineContext, scope.coroutineContext, scope.coroutineContext),
+    backupRepository = backupRepository,
+    application = application,
   )
 
   @Test

@@ -194,6 +194,36 @@ private fun Settings(
               )
             },
           )
+          ListItem(
+            modifier = Modifier.clickable { listener.toggleGroupByAuthor() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Person,
+                contentDescription = stringResource(StringsR.string.settings_library_group_by_author_title),
+              )
+            },
+            headlineContent = { Text(stringResource(StringsR.string.settings_library_group_by_author_title)) },
+            trailingContent = {
+              val switchIcon: @Composable (() -> Unit)? = if (viewState.groupByAuthor) {
+                {
+                  Icon(
+                    imageVector = VoiceIcons.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                  )
+                }
+              } else {
+                null
+              }
+              Switch(
+                checked = viewState.groupByAuthor,
+                onCheckedChange = {
+                  listener.toggleGroupByAuthor()
+                },
+                thumbContent = switchIcon,
+              )
+            },
+          )
         }
       }
 
@@ -208,59 +238,6 @@ private fun Settings(
 
       if (viewState.showAnalyticSetting && !viewState.kioskMode) {
         item {
-          AnalyticsRow(analyticsEnabled = viewState.analyticsEnabled, toggle = listener::toggleAnalytics)
-        }
-      }
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.toggleGrid() },
-          leadingContent = {
-            val icon = if (viewState.useGrid) {
-              VoiceIcons.GridView
-            } else {
-              VoiceIcons.ViewList
-            }
-            Icon(
-              imageVector = icon,
-              contentDescription = stringResource(StringsR.string.settings_library_use_grid_title),
-            )
-          },
-          headlineContent = { Text(stringResource(StringsR.string.settings_library_use_grid_title)) },
-          trailingContent = {
-            Switch(
-              checked = viewState.useGrid,
-              onCheckedChange = {
-                listener.toggleGrid()
-              },
-            )
-          },
-        )
-      }
-
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.toggleGroupByAuthor() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Person,
-              contentDescription = stringResource(StringsR.string.settings_library_group_by_author_title),
-            )
-          },
-          headlineContent = { Text(stringResource(StringsR.string.settings_library_group_by_author_title)) },
-          trailingContent = {
-            Switch(
-              checked = viewState.groupByAuthor,
-              onCheckedChange = {
-                listener.toggleGroupByAuthor()
-              },
-            )
-          },
-        )
-      }
-
-      item {
-        SeekTimeRow(viewState.seekTimeInSeconds) {
-          listener.onSeekAmountRowClick()
           SettingsCard(title = stringResource(StringsR.string.settings_category_privacy)) {
             AnalyticsRow(analyticsEnabled = viewState.analyticsEnabled, toggle = listener::toggleAnalytics)
           }
@@ -275,38 +252,104 @@ private fun Settings(
           AutoRewindRow(viewState.autoRewindInSeconds) {
             listener.onAutoRewindRowClick()
           }
+          ListItem(
+            modifier = Modifier.clickable { listener.toggleLockscreenSeeking() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.LockOpen,
+                contentDescription = stringResource(StringsR.string.settings_playback_lockscreen_seeking_title),
+              )
+            },
+            headlineContent = { Text(stringResource(StringsR.string.settings_playback_lockscreen_seeking_title)) },
+            supportingContent = { Text(stringResource(StringsR.string.settings_playback_lockscreen_seeking_summary)) },
+            trailingContent = {
+              val switchIcon: @Composable (() -> Unit)? = if (viewState.lockscreenSeekingEnabled) {
+                {
+                  Icon(
+                    imageVector = VoiceIcons.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                  )
+                }
+              } else {
+                null
+              }
+              Switch(
+                checked = viewState.lockscreenSeekingEnabled,
+                onCheckedChange = { listener.toggleLockscreenSeeking() },
+                thumbContent = switchIcon,
+              )
+            },
+          )
+          ListItem(
+            modifier = Modifier.clickable { listener.toggleAdjustTimeForPlaybackSpeed() },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Speed,
+                contentDescription = stringResource(StringsR.string.settings_playback_adjust_time_for_speed_title),
+              )
+            },
+            headlineContent = { Text(stringResource(StringsR.string.settings_playback_adjust_time_for_speed_title)) },
+            supportingContent = { Text(stringResource(StringsR.string.settings_playback_adjust_time_for_speed_summary)) },
+            trailingContent = {
+              val switchIcon: @Composable (() -> Unit)? = if (viewState.adjustTimeForPlaybackSpeed) {
+                {
+                  Icon(
+                    imageVector = VoiceIcons.Check,
+                    contentDescription = null,
+                    modifier = Modifier.size(SwitchDefaults.IconSize),
+                  )
+                }
+              } else {
+                null
+              }
+              Switch(
+                checked = viewState.adjustTimeForPlaybackSpeed,
+                onCheckedChange = { listener.toggleAdjustTimeForPlaybackSpeed() },
+                thumbContent = switchIcon,
+              )
+            },
+          )
         }
       }
 
       item {
-        ListItem(
-          modifier = Modifier.clickable { listener.toggleLockscreenSeeking() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.LockOpen,
-              contentDescription = stringResource(StringsR.string.settings_playback_lockscreen_seeking_title),
-            )
-          },
-          headlineContent = { Text(stringResource(StringsR.string.settings_playback_lockscreen_seeking_title)) },
-          supportingContent = { Text(stringResource(StringsR.string.settings_playback_lockscreen_seeking_summary)) },
-          trailingContent = {
-            Switch(
-              checked = viewState.lockscreenSeekingEnabled,
-              onCheckedChange = { listener.toggleLockscreenSeeking() },
-          modifier = Modifier.clickable { listener.toggleAdjustTimeForPlaybackSpeed() },
-          headlineContent = { Text(stringResource(StringsR.string.settings_playback_adjust_time_for_speed_title)) },
-          supportingContent = { Text(stringResource(StringsR.string.settings_playback_adjust_time_for_speed_summary)) },
-          trailingContent = {
-            Switch(
-              checked = viewState.adjustTimeForPlaybackSpeed,
-              onCheckedChange = { listener.toggleAdjustTimeForPlaybackSpeed() },
-            )
-          },
-        )
+        AutoSleepTimerCard(viewState.autoSleepTimer, listener)
       }
 
       item {
-        AutoSleepTimerCard(viewState.autoSleepTimer, listener)
+        SettingsCard(title = stringResource(StringsR.string.settings_category_backup)) {
+          ListItem(
+            modifier = Modifier.clickable { exportLauncher.launch("voice_backup.json") },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Download,
+                contentDescription = "Export Backup",
+              )
+            },
+            headlineContent = {
+              Text("Export Backup")
+            },
+            supportingContent = {
+              Text("Export progress and settings to a JSON file")
+            },
+          )
+          ListItem(
+            modifier = Modifier.clickable { importLauncher.launch(arrayOf("application/json", "*/*")) },
+            leadingContent = {
+              Icon(
+                imageVector = VoiceIcons.Folder,
+                contentDescription = "Import Backup",
+              )
+            },
+            headlineContent = {
+              Text("Import Backup")
+            },
+            supportingContent = {
+              Text("Import progress and settings from a JSON file")
+            },
+          )
+        }
       }
 
       item {
@@ -406,106 +449,6 @@ private fun Settings(
         }
       }
 
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.getSupport() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Help,
-              contentDescription = stringResource(StringsR.string.settings_support_get_support_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_get_support_title))
-          },
-        )
-      }
-
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.openBugReport() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.BugReport,
-              contentDescription = stringResource(StringsR.string.settings_support_report_issue_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_report_issue_title))
-          },
-        )
-      }
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.openTranslations() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Language,
-              contentDescription = stringResource(StringsR.string.settings_support_help_translating_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_help_translating_title))
-          },
-        )
-      }
-      item {
-        ListItem(
-          modifier = Modifier.clickable { listener.openFaq() },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Help,
-              contentDescription = stringResource(StringsR.string.settings_support_faq_title),
-            )
-          },
-          headlineContent = {
-            Text(stringResource(StringsR.string.settings_support_faq_title))
-          },
-        )
-      }
-
-      item {
-        ListItem(
-          modifier = Modifier.clickable { exportLauncher.launch("voice_backup.json") },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Download,
-              contentDescription = "Export Backup",
-            )
-          },
-          headlineContent = {
-            Text("Export Backup")
-          },
-          supportingContent = {
-            Text("Export progress and settings to a JSON file")
-          },
-        )
-      }
-
-      item {
-        ListItem(
-          modifier = Modifier.clickable { importLauncher.launch(arrayOf("application/json", "*/*")) },
-          leadingContent = {
-            Icon(
-              imageVector = VoiceIcons.Folder,
-              contentDescription = "Import Backup",
-            )
-          },
-          headlineContent = {
-            Text("Import Backup")
-          },
-          supportingContent = {
-            Text("Import progress and settings from a JSON file")
-          },
-        )
-      }
-
-      item {
-        AppVersion(
-          appVersion = viewState.appVersion,
-          onClick = listener::onAppVersionClick,
-        )
-      }
       if (viewState.kioskMode) {
         if (viewState.showAnalyticSetting) {
           item {

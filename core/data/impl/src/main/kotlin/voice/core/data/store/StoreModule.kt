@@ -229,6 +229,10 @@ public interface StoreModule {
       defaultValue = emptySet(),
       fileName = "expandedAuthors",
     )
+  }
+
+  @Provides
+  @SingleIn(AppScope::class)
   @AdjustTimeForPlaybackSpeedStore
   private fun adjustTimeForPlaybackSpeed(factory: VoiceDataStoreFactory): DataStore<Boolean> {
     return factory.boolean("adjustTimeForPlaybackSpeed", defaultValue = false)

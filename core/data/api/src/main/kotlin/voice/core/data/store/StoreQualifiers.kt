@@ -49,8 +49,12 @@ public annotation class FeatureFlagOverridesStore
 
 @Qualifier
 public annotation class AdjustTimeForPlaybackSpeedStore
+
+@Qualifier
 public annotation class GroupByAuthorStore
 
 @Qualifier
 public annotation class ExpandedAuthorsStore
+
+@Qualifier
 public annotation class LockscreenSeekingEnabledStore

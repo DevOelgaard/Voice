@@ -304,6 +304,8 @@
     <string name="settings.category.sleep_timer">Sleep Timer</string>
     <string name="settings.category.support">Support</string>
     <string name="settings.category.about">About</string>
+    <!-- Settings category title for data backup and import/export. -->
+    <string name="settings.category.backup">Backup &amp; Restore</string>
     <!-- Summary text for total book progress on the playback screen. -->
     <string name="playback_total_progress_summary">%1$d%% Complete • %2$s remaining</string>
 </resources>

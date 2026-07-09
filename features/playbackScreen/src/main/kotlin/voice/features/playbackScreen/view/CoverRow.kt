@@ -21,11 +21,12 @@ internal fun CoverRow(
   bookId: BookId,
   cover: String?,
   sleepTimerState: BookPlayViewState.SleepTimerViewState,
+  playing: Boolean,
   onPlayClick: () -> Unit,
   modifier: Modifier = Modifier,
 ) {
   Box(modifier) {
-    Cover(bookId = bookId, onDoubleClick = onPlayClick, cover = cover)
+    Cover(bookId = bookId, onDoubleClick = onPlayClick, cover = cover, playing = playing)
     when (sleepTimerState) {
       BookPlayViewState.SleepTimerViewState.Disabled -> {
       }

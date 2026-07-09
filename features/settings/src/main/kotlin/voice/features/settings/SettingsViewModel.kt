@@ -37,6 +37,11 @@ import voice.navigation.Destination
 import voice.navigation.Navigator
 import java.time.LocalTime
 
+import android.net.Uri
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import voice.core.data.backup.BackupRepository
+
 @Inject
 class SettingsViewModel(
   @ThemeModeStore
@@ -66,6 +71,8 @@ class SettingsViewModel(
   @voice.core.data.store.GroupByAuthorStore
   private val groupByAuthorStore: DataStore<Boolean>,
   dispatcherProvider: DispatcherProvider,
+  private val backupRepository: BackupRepository,
+  private val application: android.app.Application,
 ) : SettingsListener {
 
   private val mainScope = MainScope(dispatcherProvider)
@@ -273,9 +280,46 @@ class SettingsViewModel(
   override fun toggleGroupByAuthor() {
     mainScope.launch {
       groupByAuthorStore.updateData { !it }
+    }
+  }
+
   override fun toggleLockscreenSeeking() {
     mainScope.launch {
       lockscreenSeekingEnabledStore.updateData { !it }
+    }
+  }
+
+  override fun exportData(uri: Uri) {
+    mainScope.launch {
+      try {
+        val json = backupRepository.exportData()
+        withContext(Dispatchers.IO) {
+          application.contentResolver.openOutputStream(uri)?.use { outputStream ->
+            outputStream.write(json.toByteArray())
+          }
+        }
+      } catch (e: Exception) {
+        // Here we could show a toast or error state
+        e.printStackTrace()
+      }
+    }
+  }
+
+  override fun importData(uri: Uri) {
+    mainScope.launch {
+      try {
+        val json = withContext(Dispatchers.IO) {
+          application.contentResolver.openInputStream(uri)?.use { inputStream ->
+            inputStream.bufferedReader().use { it.readText() }
+          }
+        }
+        if (json != null) {
+          backupRepository.importData(json)
+        }
+      } catch (e: Exception) {
+        // Here we could show a toast or error state
+        e.printStackTrace()
+      }
     }
   }
 }

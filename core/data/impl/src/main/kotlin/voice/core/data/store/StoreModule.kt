@@ -211,6 +211,10 @@ public interface StoreModule {
   @LockscreenSeekingEnabledStore
   private fun lockscreenSeekingEnabled(factory: VoiceDataStoreFactory): DataStore<Boolean> {
     return factory.boolean("lockscreenSeekingEnabled", defaultValue = false)
+  }
+
+  @Provides
+  @SingleIn(AppScope::class)
   @GroupByAuthorStore
   private fun groupByAuthor(factory: VoiceDataStoreFactory): DataStore<Boolean> {
     return factory.boolean("groupByAuthor", defaultValue = false)

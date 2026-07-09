@@ -28,6 +28,9 @@ public interface BookContentDao {
     """,
   )
   public suspend fun search(query: String): List<BookId>
+
+  @Query("DELETE FROM content2")
+  public suspend fun deleteAll()
 }
 
 @Entity(tableName = "bookSearchFts")

@@ -3,6 +3,7 @@ package voice.features.settings
 import voice.core.data.ThemeColorScheme
 import voice.core.data.ThemeMode
 import java.time.LocalTime
+import android.net.Uri
 
 interface SettingsListener {
   fun close()
@@ -31,6 +32,8 @@ interface SettingsListener {
   fun toggleLockscreenSeeking()
   fun openDeveloperMenu()
   fun toggleGroupByAuthor()
+  fun exportData(uri: Uri)
+  fun importData(uri: Uri)
 
   companion object {
     fun noop() = object : SettingsListener {
@@ -60,6 +63,8 @@ interface SettingsListener {
       override fun toggleLockscreenSeeking() {}
       override fun openDeveloperMenu() {}
       override fun toggleGroupByAuthor() {}
+      override fun exportData(uri: Uri) {}
+      override fun importData(uri: Uri) {}
     }
   }
 }

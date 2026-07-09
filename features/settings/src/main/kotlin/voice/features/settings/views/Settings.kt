@@ -15,6 +15,13 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.TextButton
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.retain.retain
@@ -57,6 +64,40 @@ private fun Settings(
   snackbarHostState: SnackbarHostState = remember { SnackbarHostState() },
 ) {
   val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
+
+  var importUriToConfirm by remember { mutableStateOf<android.net.Uri?>(null) }
+  val exportLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("application/json")) { uri ->
+    if (uri != null) {
+      listener.exportData(uri)
+    }
+  }
+  val importLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+    if (uri != null) {
+      importUriToConfirm = uri
+    }
+  }
+
+  if (importUriToConfirm != null) {
+    AlertDialog(
+      onDismissRequest = { importUriToConfirm = null },
+      title = { Text("Import Data") },
+      text = { Text("Are you sure you want to overwrite your current data and settings with the imported file?") },
+      confirmButton = {
+        TextButton(onClick = {
+          importUriToConfirm?.let { listener.importData(it) }
+          importUriToConfirm = null
+        }) {
+          Text("Import")
+        }
+      },
+      dismissButton = {
+        TextButton(onClick = { importUriToConfirm = null }) {
+          Text("Cancel")
+        }
+      }
+    )
+  }
+
   Scaffold(
     modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
     snackbarHost = {
@@ -297,6 +338,43 @@ private fun Settings(
           },
         )
       }
+
+      item {
+        ListItem(
+          modifier = Modifier.clickable { exportLauncher.launch("voice_backup.json") },
+          leadingContent = {
+            Icon(
+              imageVector = VoiceIcons.Download,
+              contentDescription = "Export Backup",
+            )
+          },
+          headlineContent = {
+            Text("Export Backup")
+          },
+          supportingContent = {
+            Text("Export progress and settings to a JSON file")
+          },
+        )
+      }
+
+      item {
+        ListItem(
+          modifier = Modifier.clickable { importLauncher.launch(arrayOf("application/json", "*/*")) },
+          leadingContent = {
+            Icon(
+              imageVector = VoiceIcons.Folder,
+              contentDescription = "Import Backup",
+            )
+          },
+          headlineContent = {
+            Text("Import Backup")
+          },
+          supportingContent = {
+            Text("Import progress and settings from a JSON file")
+          },
+        )
+      }
+
       item {
         AppVersion(
           appVersion = viewState.appVersion,

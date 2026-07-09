@@ -30,6 +30,9 @@ public abstract class RecentBookSearchDao {
     }
   }
 
+  @Query("DELETE FROM recentBookSearch")
+  public abstract suspend fun deleteAll()
+
   public companion object {
     public const val LIMIT: Int = 7
   }

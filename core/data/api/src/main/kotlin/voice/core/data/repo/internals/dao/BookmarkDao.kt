@@ -18,4 +18,10 @@ public interface BookmarkDao {
 
   @Query("SELECT * FROM bookmark2 WHERE chapterId IN(:chapters)")
   public suspend fun allForChapters(chapters: List<@JvmSuppressWildcards ChapterId>): List<Bookmark>
+
+  @Query("SELECT * FROM bookmark2")
+  public suspend fun all(): List<Bookmark>
+
+  @Query("DELETE FROM bookmark2")
+  public suspend fun deleteAll()
 }

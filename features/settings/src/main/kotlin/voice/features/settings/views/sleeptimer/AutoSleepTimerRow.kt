@@ -12,6 +12,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.SwitchDefaults
 import voice.core.ui.VoiceTheme
 import voice.core.ui.icons.VoiceIcons
 import java.time.LocalTime
@@ -50,9 +52,21 @@ internal fun AutoSleepTimerRow(
         color = MaterialTheme.colorScheme.onSurfaceVariant,
       )
     }
+    val switchIcon: @Composable (() -> Unit)? = if (autoSleepTimer) {
+      {
+        Icon(
+          imageVector = VoiceIcons.Check,
+          contentDescription = null,
+          modifier = Modifier.size(SwitchDefaults.IconSize),
+        )
+      }
+    } else {
+      null
+    }
     Switch(
       checked = autoSleepTimer,
       onCheckedChange = toggleAutoSleepTimer,
+      thumbContent = switchIcon,
     )
   }
 }

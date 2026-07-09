@@ -5,9 +5,13 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -33,7 +37,7 @@ internal fun BookPlayAppBar(
   useLandscapeLayout: Boolean,
 ) {
   val appBarActions: @Composable RowScope.() -> Unit = {
-    IconButton(onClick = onSleepTimerClick) {
+    FilledTonalIconButton(onClick = onSleepTimerClick) {
       val sleepTimerIcon = if (viewState.sleepTimerState is BookPlayViewState.SleepTimerViewState.Disabled) {
         VoiceIcons.Bedtime
       } else {
@@ -44,7 +48,9 @@ internal fun BookPlayAppBar(
         contentDescription = stringResource(id = R.string.sleep_timer_action_open),
       )
     }
-    Box(
+    Surface(
+      shape = CircleShape,
+      color = MaterialTheme.colorScheme.secondaryContainer,
       modifier = Modifier
         .size(40.dp)
         .combinedClickable(
@@ -53,14 +59,15 @@ internal fun BookPlayAppBar(
           indication = ripple(bounded = false, radius = 20.dp),
           interactionSource = remember { MutableInteractionSource() },
         ),
-      contentAlignment = Alignment.Center,
     ) {
-      Icon(
-        imageVector = VoiceIcons.CollectionsBookmark,
-        contentDescription = stringResource(id = R.string.bookmark_title),
-      )
+      Box(contentAlignment = Alignment.Center) {
+        Icon(
+          imageVector = VoiceIcons.CollectionsBookmark,
+          contentDescription = stringResource(id = R.string.bookmark_title),
+        )
+      }
     }
-    IconButton(onClick = onSpeedChangeClick) {
+    FilledTonalIconButton(onClick = onSpeedChangeClick) {
       Icon(
         imageVector = VoiceIcons.Speed,
         contentDescription = stringResource(id = R.string.playback_speed_title),

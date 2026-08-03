@@ -56,6 +56,7 @@ import voice.navigation.Destination
 import voice.navigation.NavEntryProvider
 import voice.core.ui.retain
 
+@ContributesTo(AppScope::class)
 public interface StatisticsGraph {
   public val statisticsViewModel: StatisticsViewModel
 }

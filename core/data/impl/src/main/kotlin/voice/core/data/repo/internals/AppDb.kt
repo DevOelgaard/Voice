@@ -22,6 +22,7 @@ import voice.core.data.repo.internals.migrations.Migration56
     Bookmark::class,
     BookSearchFts::class,
     RecentBookSearch::class,
+    voice.core.data.PlaybackSession::class,
   ],
   version = AppDb.VERSION,
   autoMigrations = [
@@ -32,6 +33,7 @@ import voice.core.data.repo.internals.migrations.Migration56
     AutoMigration(from = 56, to = 57, spec = Migration56::class),
     AutoMigration(from = 57, to = 58),
     AutoMigration(from = 58, to = 59),
+    AutoMigration(from = 59, to = 60),
   ],
 )
 @TypeConverters(Converters::class)
@@ -43,8 +45,10 @@ public abstract class AppDb : RoomDatabase() {
 
   public abstract fun recentBookSearchDao(): RecentBookSearchDao
 
+  public abstract fun playbackSessionDao(): voice.core.data.repo.internals.dao.PlaybackSessionDao
+
   internal companion object {
-    const val VERSION = 59
+    const val VERSION = 60
     const val DATABASE_NAME = "autoBookDB"
   }
 }

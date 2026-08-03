@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.runtime.Composable
 import voice.features.bookOverview.views.BookFolderIcon
 import voice.features.bookOverview.views.SettingsIcon
+import voice.features.bookOverview.views.StatisticsIcon
 
 @Composable
 internal fun ColumnScope.TopBarTrailingIcon(
@@ -16,6 +17,7 @@ internal fun ColumnScope.TopBarTrailingIcon(
   showFolderPickerIcon: Boolean,
   onBookFolderClick: () -> Unit,
   onSettingsClick: () -> Unit,
+  onStatisticsClick: () -> Unit,
 ) {
   AnimatedVisibility(
     visible = !searchActive,
@@ -23,6 +25,7 @@ internal fun ColumnScope.TopBarTrailingIcon(
     exit = fadeOut(),
   ) {
     Row {
+      StatisticsIcon(onStatisticsClick)
       if (showFolderPickerIcon) {
         BookFolderIcon(withHint = showAddBookHint, onClick = onBookFolderClick)
       }

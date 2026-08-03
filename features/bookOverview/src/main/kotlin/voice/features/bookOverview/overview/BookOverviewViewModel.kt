@@ -307,6 +307,10 @@ class BookOverviewViewModel(
     navigator.goTo(Destination.Settings)
   }
 
+  fun onStatisticsClick() {
+    navigator.goTo(Destination.Statistics)
+  }
+
   fun onBookClick(id: BookId) {
     navigator.goTo(Destination.Playback(id))
   }

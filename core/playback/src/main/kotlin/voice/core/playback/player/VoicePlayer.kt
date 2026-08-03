@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import voice.core.analytics.api.Analytics
+import voice.core.playback.analytics.PlaybackSessionTracker
 import voice.core.data.BookContent
 import voice.core.data.BookId
 import voice.core.data.repo.BookRepository
@@ -49,6 +50,7 @@ class VoicePlayer(
   private val volumeGain: VolumeGain,
   private val sleepTimer: SleepTimer,
   private val analytics: Analytics,
+  private val playbackSessionTracker: PlaybackSessionTracker,
 ) : ForwardingPlayer(player) {
 
   private val endOfChapterSleepTimerListener = object : Player.Listener {
@@ -78,6 +80,7 @@ class VoicePlayer(
 
   init {
     player.addListener(endOfChapterSleepTimerListener)
+    playbackSessionTracker.attach(player)
   }
 
   fun forceSeekToNext() {

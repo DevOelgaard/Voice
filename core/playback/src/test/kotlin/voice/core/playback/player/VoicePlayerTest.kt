@@ -110,6 +110,7 @@ class VoicePlayerTest {
     volumeGain = mockk(relaxed = true),
     sleepTimer = sleepTimer,
     analytics = mockk(relaxed = true),
+    playbackSessionTracker = mockk(relaxed = true),
   )
 
   @Test

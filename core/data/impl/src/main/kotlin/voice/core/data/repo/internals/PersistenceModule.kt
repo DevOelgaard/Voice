@@ -41,4 +41,7 @@ public interface PersistenceModule {
 
   @Provides
   private fun bindRoomDatabase(appDb: AppDb): RoomDatabase = appDb
+  @Provides
+  private fun providePlaybackSessionDao(appDb: AppDb): voice.core.data.repo.internals.dao.PlaybackSessionDao = appDb.playbackSessionDao()
+
 }

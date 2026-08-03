@@ -111,6 +111,7 @@ fun BookOverviewScreen(modifier: Modifier = Modifier) {
     BookOverview(
       viewState = viewState,
       onSettingsClick = bookOverviewViewModel::onSettingsClick,
+      onStatisticsClick = bookOverviewViewModel::onStatisticsClick,
       onBookClick = bookOverviewViewModel::onBookClick,
       onBookLongClick = { bookId ->
         bottomSheetViewModel.bookSelected(bookId)
@@ -190,6 +191,7 @@ fun BookOverviewScreen(modifier: Modifier = Modifier) {
 internal fun BookOverview(
   viewState: BookOverviewViewState,
   onSettingsClick: () -> Unit,
+  onStatisticsClick: () -> Unit,
   onBookClick: (BookId) -> Unit,
   onBookLongClick: (BookId) -> Unit,
   onBookFolderClick: () -> Unit,
@@ -210,6 +212,7 @@ internal fun BookOverview(
         viewState = viewState,
         onBookFolderClick = onBookFolderClick,
         onSettingsClick = onSettingsClick,
+        onStatisticsClick = onStatisticsClick,
         onActiveChange = onSearchActiveChange,
         onQueryChange = onSearchQueryChange,
         onSearchBookClick = onSearchBookClick,
@@ -308,6 +311,7 @@ fun BookOverviewPreview(
     BookOverview(
       viewState = viewState,
       onSettingsClick = {},
+      onStatisticsClick = {},
       onBookClick = {},
       onBookLongClick = {},
       onBookFolderClick = {},

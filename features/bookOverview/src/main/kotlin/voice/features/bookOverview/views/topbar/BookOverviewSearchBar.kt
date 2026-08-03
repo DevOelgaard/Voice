@@ -20,6 +20,7 @@ internal fun ColumnScope.BookOverviewSearchBar(
   onActiveChange: (Boolean) -> Unit,
   onBookFolderClick: () -> Unit,
   onSettingsClick: () -> Unit,
+  onStatisticsClick: () -> Unit,
   onSearchBookClick: (BookId) -> Unit,
   searchActive: Boolean,
   showAddBookHint: Boolean,
@@ -51,6 +52,7 @@ internal fun ColumnScope.BookOverviewSearchBar(
             showFolderPickerIcon = showFolderPickerIcon,
             onBookFolderClick = onBookFolderClick,
             onSettingsClick = onSettingsClick,
+            onStatisticsClick = onStatisticsClick,
           )
         },
       )

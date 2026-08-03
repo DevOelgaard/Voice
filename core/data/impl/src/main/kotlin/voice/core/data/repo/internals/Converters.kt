@@ -62,6 +62,16 @@ internal class Converters {
   }
 
   @TypeConverter
+  fun fromVolumeSpanList(list: List<voice.core.data.VolumeSpan>): String {
+    return json.encodeToString(ListSerializer(voice.core.data.VolumeSpan.serializer()), list)
+  }
+
+  @TypeConverter
+  fun toVolumeSpanList(string: String): List<voice.core.data.VolumeSpan> {
+    return json.decodeFromString(ListSerializer(voice.core.data.VolumeSpan.serializer()), string)
+  }
+
+  @TypeConverter
   fun toBookId(value: String): BookId = BookId(value)
 
   @TypeConverter

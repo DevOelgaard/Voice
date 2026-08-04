@@ -15,6 +15,9 @@ public interface PlaybackSessionDao {
   @Query("SELECT * FROM playbackSessions ORDER BY startedAt DESC")
   public suspend fun getAll(): List<PlaybackSession>
 
+  @Query("SELECT * FROM playbackSessions ORDER BY startedAt DESC")
+  public fun flowAll(): kotlinx.coroutines.flow.Flow<List<PlaybackSession>>
+
   @Query("SELECT * FROM playbackSessions WHERE bookId = :bookId ORDER BY startedAt DESC")
   public suspend fun getForBook(bookId: String): List<PlaybackSession>
 

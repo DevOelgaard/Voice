@@ -20,8 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import voice.core.ui.icons.VoiceIcons
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -44,17 +43,15 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.unit.dp
 import java.time.format.DateTimeFormatter
 
+import androidx.compose.runtime.retain.retain
+import androidx.navigation3.runtime.NavEntry
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
-import dev.zacsweers.metro.Graph
 import dev.zacsweers.metro.IntoSet
-import dev.zacsweers.metro.Module
 import dev.zacsweers.metro.Provides
 import voice.core.common.rootGraphAs
-import voice.core.ui.NavEntry
 import voice.navigation.Destination
 import voice.navigation.NavEntryProvider
-import voice.core.ui.retain
 
 @ContributesTo(AppScope::class)
 public interface StatisticsGraph {
@@ -62,7 +59,6 @@ public interface StatisticsGraph {
 }
 
 @ContributesTo(AppScope::class)
-@Module
 public interface StatisticsModule {
   @Provides
   @IntoSet
@@ -85,7 +81,7 @@ public fun StatisticsScreen() {
         title = { Text("Statistics") },
         navigationIcon = {
           IconButton(onClick = { listener.close() }) {
-             Icon(imageVector = Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+             Icon(imageVector = VoiceIcons.ArrowBack, contentDescription = "Back")
           }
         }
       )

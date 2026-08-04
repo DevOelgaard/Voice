@@ -21,6 +21,10 @@ public class PlaybackSessionRepoImpl(
     return dao.getAll()
   }
 
+  override fun flowAll(): kotlinx.coroutines.flow.Flow<List<PlaybackSession>> {
+    return dao.flowAll()
+  }
+
   override suspend fun getForBook(bookId: String): List<PlaybackSession> {
     return dao.getForBook(bookId)
   }

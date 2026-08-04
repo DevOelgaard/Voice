@@ -24,7 +24,7 @@ public class StatisticsViewModel(
 
   @Composable
   public fun viewState(): StatisticsViewState {
-    val sessions by remember { playbackSessionRepo.getAll() }.collectAsState(initial = emptyList())
+    val sessions by remember { playbackSessionRepo.flowAll() }.collectAsState(initial = emptyList())
     val books by remember { bookRepository.flow() }.collectAsState(initial = emptyList())
     
     val bookMap = remember(books) { books.associateBy { it.id } }
@@ -47,7 +47,7 @@ public class StatisticsViewModel(
     val bookStats = remember(sessions, bookMap, expandedBooks.value) {
       sessions.groupBy { it.bookId }
         .map { (bookId, bookSessions) ->
-          val bookTitle = bookMap[bookId]?.title ?: "Unknown Book"
+          val bookTitle = bookMap[bookId]?.content?.name ?: "Unknown Book"
           val totalTime = bookSessions.sumOf { it.lengthInSeconds }
           
           val totalVolumeTime = bookSessions.sumOf { s -> 
@@ -55,8 +55,8 @@ public class StatisticsViewModel(
           }
           val averageVolume = if (totalVolumeTime > 0) {
              bookSessions.sumOf { s ->
-               s.volumeSpans.sumOf { it.volume.toLong() * it.durationMillis }.toFloat()
-             } / totalVolumeTime
+               s.volumeSpans.sumOf { it.volume.toLong() * it.durationMillis }
+             }.toFloat() / totalVolumeTime
           } else {
              0f
           }
